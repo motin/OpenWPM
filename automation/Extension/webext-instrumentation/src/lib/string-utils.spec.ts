@@ -1,6 +1,10 @@
 // tslint:disable:no-expression-statement
 import test from "ava";
-import { escapeUrl } from "./string-utils";
+import { escapeString, escapeUrl } from "./string-utils";
+
+test("escapeString with a number", t => {
+  t.is(escapeString(123), "123");
+});
 
 test("escapeUrl", t => {
   t.is(escapeUrl("https://mozilla.org"), "https://mozilla.org");
