@@ -86,3 +86,6 @@ automation/Extension/firefox/dist
 automation/Extension/firefox/openwpm.xpi
 automation/Extension/firefox/src/content.js
 automation/Extension/firefox/src/feature.js
+
+# local parquet artifacts from S3-demo crawls
+/local-parquet-data
