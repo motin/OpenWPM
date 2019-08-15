@@ -211,3 +211,9 @@ def optimize_prefs(fo):
     # Enable legacy extensions and disable extension signing
     fo.set_preference("extensions.legacy.enabled", True)
     fo.set_preference("xpinstall.signatures.required", False)
+
+    # Set User Agent to Chrome 76
+    fo.set_preference("general.useragent.override",
+                      ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) "
+                       "AppleWebKit/537.36 (KHTML, like Gecko) "
+                       "Chrome/76.0.3809.100 Safari/537.36"))
