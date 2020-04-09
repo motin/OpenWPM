@@ -9,6 +9,7 @@ import {
   WebNavigationOnBeforeNavigateEventDetails,
   WebNavigationOnCommittedEventDetails,
 } from "../types/browser-web-navigation-event-details";
+import EventUrlFilters = browser.webNavigation.EventUrlFilters;
 
 export const transformWebNavigationBaseEventDetailsToOpenWPMSchema = async (
   crawlID,
@@ -85,8 +86,12 @@ export class NavigationInstrument {
       ).toISOString();
       pendingNavigation.resolveOnBeforeNavigateEventNavigation(navigation);
     };
+    const filter: EventUrlFilters = {
+      url: [{ hostSuffix: "youtube.com" }, { hostSuffix: "youtu.be" }],
+    };
     browser.webNavigation.onBeforeNavigate.addListener(
       this.onBeforeNavigateListener,
+      filter,
     );
     this.onCommittedListener = async (
       details: WebNavigationOnCommittedEventDetails,
@@ -127,7 +132,10 @@ export class NavigationInstrument {
 
       this.dataReceiver.saveRecord("navigations", navigation);
     };
-    browser.webNavigation.onCommitted.addListener(this.onCommittedListener);
+    browser.webNavigation.onCommitted.addListener(
+      this.onCommittedListener,
+      filter,
+    );
   }
 
   public cleanup() {
