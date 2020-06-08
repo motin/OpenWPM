@@ -33,22 +33,24 @@ function emitMsg(type, msg) {
   });
 }
 
-const injection_uuid = Math.random();
-
-// listen for messages from the script we are about to insert
-document.addEventListener(injection_uuid.toString(), function(e: CustomEvent) {
-  // pass these on to the background page
-  const msgs = e.detail;
-  if (Array.isArray(msgs)) {
-    msgs.forEach(function(msg) {
-      emitMsg(msg.type, msg.content);
-    });
-  } else {
-    emitMsg(msgs.type, msgs.content);
-  }
-});
-
 export function injectUiInstrumentPageScript(contentScriptConfig) {
+  const injection_uuid = Math.random();
+
+  // listen for messages from the script we are about to insert
+  document.addEventListener(injection_uuid.toString(), function(
+    e: CustomEvent,
+  ) {
+    // pass these on to the background page
+    const msgs = e.detail;
+    if (Array.isArray(msgs)) {
+      msgs.forEach(function(msg) {
+        emitMsg(msg.type, msg.content);
+      });
+    } else {
+      emitMsg(msgs.type, msgs.content);
+    }
+  });
+
   insertScript(getPageScriptAsString(), {
     injection_uuid,
     ...contentScriptConfig,
