@@ -38,22 +38,22 @@ function emitMsg(type, msg) {
   });
 }
 
-const event_id = Math.random();
-
-// listen for messages from the script we are about to insert
-document.addEventListener(event_id.toString(), function(e: CustomEvent) {
-  // pass these on to the background page
-  const msgs = e.detail;
-  if (Array.isArray(msgs)) {
-    msgs.forEach(function(msg) {
-      emitMsg(msg.type, msg.content);
-    });
-  } else {
-    emitMsg(msgs.type, msgs.content);
-  }
-});
-
 export function injectJavascriptInstrumentPageScript(contentScriptConfig) {
+  const event_id = Math.random();
+
+  // listen for messages from the script we are about to insert
+  document.addEventListener(event_id.toString(), function(e: CustomEvent) {
+    // pass these on to the background page
+    const msgs = e.detail;
+    if (Array.isArray(msgs)) {
+      msgs.forEach(function(msg) {
+        emitMsg(msg.type, msg.content);
+      });
+    } else {
+      emitMsg(msgs.type, msgs.content);
+    }
+  });
+
   insertScript(getPageScriptAsString(), {
     event_id,
     ...contentScriptConfig,
