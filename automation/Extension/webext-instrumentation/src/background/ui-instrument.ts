@@ -1,3 +1,4 @@
+import "content-scripts-register-polyfill";
 import { browser, Runtime } from "webextension-polyfill-ts";
 import { UiInstrumentMetadata, UiInstrumentTimeStampedMessage } from "..";
 import {

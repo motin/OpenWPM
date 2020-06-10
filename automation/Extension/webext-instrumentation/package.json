@@ -60,6 +60,7 @@
     "node": ">=8.9"
   },
   "dependencies": {
+    "content-scripts-register-polyfill": "^1.0.1",
     "webextension-polyfill-ts": "^0.17.0"
   },
   "devDependencies": {

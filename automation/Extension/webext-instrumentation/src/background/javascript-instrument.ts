@@ -1,3 +1,4 @@
+import "content-scripts-register-polyfill";
 import { browser, Runtime } from "webextension-polyfill-ts";
 import { incrementedEventOrdinal } from "../lib/extension-session-event-ordinal";
 import { extensionSessionUuid } from "../lib/extension-session-uuid";
