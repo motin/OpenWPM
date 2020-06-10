@@ -3,9 +3,9 @@
  * Defined and exported here in order for our code to be able to reference them explicitly in helper functions
  * and class methods that accept arguments of these types.
  */
-
-import TransitionType = browser.webNavigation.TransitionType;
-import TransitionQualifier = browser.webNavigation.TransitionQualifier;
+import { History, WebNavigation } from "webextension-polyfill-ts";
+import TransitionType = History.TransitionType;
+import TransitionQualifier = WebNavigation.TransitionQualifier;
 
 export interface WebNavigationBaseEventDetails {
   /** The ID of the tab in which the navigation is about to occur. */

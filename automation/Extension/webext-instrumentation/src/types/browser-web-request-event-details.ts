@@ -3,10 +3,10 @@
  * Defined and exported here in order for our code to be able to reference them explicitly in helper functions
  * and class methods that accept arguments of these types.
  */
-
-import ResourceType = browser.webRequest.ResourceType;
-import UploadData = browser.webRequest.UploadData;
-import HttpHeaders = browser.webRequest.HttpHeaders;
+import { WebRequest } from "webextension-polyfill-ts";
+import HttpHeaders = WebRequest.HttpHeaders;
+import UploadData = WebRequest.UploadData;
+import ResourceType = WebRequest.ResourceType;
 
 export interface FrameAncestor {
   /** The URL that the document was loaded from. */

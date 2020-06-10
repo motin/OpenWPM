@@ -1,4 +1,4 @@
-import MessageSender = browser.runtime.MessageSender;
+import { browser, Runtime } from "webextension-polyfill-ts";
 import { UiInstrumentMetadata, UiInstrumentTimeStampedMessage } from "..";
 import {
   OpenWPMUiInteractionData,
@@ -8,6 +8,7 @@ import { incrementedEventOrdinal } from "../lib/extension-session-event-ordinal"
 import { extensionSessionUuid } from "../lib/extension-session-uuid";
 import { boolToInt, escapeString, escapeUrl } from "../lib/string-utils";
 import { UiInteraction, UiState } from "../schema";
+import MessageSender = Runtime.MessageSender;
 
 export class UiInstrument {
   /**
@@ -153,7 +154,7 @@ export class UiInstrument {
       state_interval_ms?: string;
     },
     registerContentScriptOptions = {},
-  ) {
+  ): Promise<void> {
     if (contentScriptConfig) {
       // TODO: Avoid using window to pass the content script config
       await browser.contentScripts.register({
@@ -171,7 +172,7 @@ export class UiInstrument {
         ...registerContentScriptOptions,
       });
     }
-    return browser.contentScripts.register({
+    await browser.contentScripts.register({
       js: [{ file: "/ui-instrument-content-script.js" }],
       matches: ["<all_urls>"],
       allFrames: true,

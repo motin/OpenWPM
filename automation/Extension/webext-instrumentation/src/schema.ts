@@ -1,4 +1,5 @@
-import OnChangedCause = browser.cookies.OnChangedCause;
+import { Cookies } from "webextension-polyfill-ts";
+import OnChangedCause = Cookies.OnChangedCause;
 
 export type DateTime = string;
 

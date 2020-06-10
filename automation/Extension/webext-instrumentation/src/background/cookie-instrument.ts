@@ -1,9 +1,10 @@
+import { browser, Cookies } from "webextension-polyfill-ts";
 import { incrementedEventOrdinal } from "../lib/extension-session-event-ordinal";
 import { extensionSessionUuid } from "../lib/extension-session-uuid";
 import { boolToInt, escapeString } from "../lib/string-utils";
-import Cookie = browser.cookies.Cookie;
-import OnChangedCause = browser.cookies.OnChangedCause;
 import { JavascriptCookie, JavascriptCookieRecord } from "../schema";
+import Cookie = Cookies.Cookie;
+import OnChangedCause = Cookies.OnChangedCause;
 
 export const transformCookieObjectToMatchOpenWPMSchema = (cookie: Cookie) => {
   const javascriptCookie = {} as JavascriptCookie;

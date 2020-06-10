@@ -1,3 +1,4 @@
+import { browser } from "webextension-polyfill-ts";
 import { instrumentFingerprintingApis } from "../lib/instrument-fingerprinting-apis";
 import { jsInstruments } from "../lib/js-instruments";
 import { pageScript } from "./javascript-instrument-page-scope";

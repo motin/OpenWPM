@@ -1,8 +1,9 @@
-import MessageSender = browser.runtime.MessageSender;
+import { browser, Runtime } from "webextension-polyfill-ts";
 import { incrementedEventOrdinal } from "../lib/extension-session-event-ordinal";
 import { extensionSessionUuid } from "../lib/extension-session-uuid";
 import { boolToInt, escapeString, escapeUrl } from "../lib/string-utils";
 import { JavascriptOperation } from "../schema";
+import MessageSender = Runtime.MessageSender;
 
 export class JavascriptInstrument {
   /**
@@ -110,7 +111,7 @@ export class JavascriptInstrument {
     });
   }
 
-  public async registerContentScript(testing, modules) {
+  public async registerContentScript(testing, modules): Promise<void> {
     const contentScriptConfig = {
       testing,
       modules,
@@ -131,7 +132,7 @@ export class JavascriptInstrument {
         matchAboutBlank: true,
       });
     }
-    return browser.contentScripts.register({
+    await browser.contentScripts.register({
       js: [{ file: "/js-instrument-content-script.js" }],
       matches: ["<all_urls>"],
       allFrames: true,

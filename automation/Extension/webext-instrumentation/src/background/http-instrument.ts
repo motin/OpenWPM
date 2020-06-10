@@ -1,12 +1,9 @@
+import { browser, WebRequest } from "webextension-polyfill-ts";
 import { incrementedEventOrdinal } from "../lib/extension-session-event-ordinal";
 import { extensionSessionUuid } from "../lib/extension-session-uuid";
 import { HttpPostParser, ParsedPostRequest } from "../lib/http-post-parser";
 import { PendingRequest } from "../lib/pending-request";
 import { PendingResponse } from "../lib/pending-response";
-import ResourceType = browser.webRequest.ResourceType;
-import RequestFilter = browser.webRequest.RequestFilter;
-import BlockingResponse = browser.webRequest.BlockingResponse;
-import HttpHeaders = browser.webRequest.HttpHeaders;
 import { boolToInt, escapeString, escapeUrl } from "../lib/string-utils";
 import { HttpRedirect, HttpRequest, HttpResponse } from "../schema";
 import {
@@ -15,6 +12,10 @@ import {
   WebRequestOnBeforeSendHeadersEventDetails,
   WebRequestOnCompletedEventDetails,
 } from "../types/browser-web-request-event-details";
+import ResourceType = WebRequest.ResourceType;
+import RequestFilter = WebRequest.RequestFilter;
+import BlockingResponse = WebRequest.BlockingResponse;
+import HttpHeaders = WebRequest.HttpHeaders;
 
 type SaveContentOption = boolean | string;
 type ResourceTypesOption = undefined | string;
@@ -58,7 +59,6 @@ export class HttpInstrument {
     "sub_frame",
     "web_manifest",
     "websocket",
-    "xbl",
     "xml_dtd",
     "xmlhttprequest",
     "xslt",

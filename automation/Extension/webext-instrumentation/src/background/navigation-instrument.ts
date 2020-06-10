@@ -1,3 +1,4 @@
+import { browser, WebNavigation } from "webextension-polyfill-ts";
 import { incrementedEventOrdinal } from "../lib/extension-session-event-ordinal";
 import { extensionSessionUuid } from "../lib/extension-session-uuid";
 import { PendingNavigation } from "../lib/pending-navigation";
@@ -9,7 +10,7 @@ import {
   WebNavigationOnBeforeNavigateEventDetails,
   WebNavigationOnCommittedEventDetails,
 } from "../types/browser-web-navigation-event-details";
-import EventUrlFilters = browser.webNavigation.EventUrlFilters;
+import EventUrlFilters = WebNavigation.EventUrlFilters;
 
 export const transformWebNavigationBaseEventDetailsToOpenWPMSchema = async (
   crawlID,

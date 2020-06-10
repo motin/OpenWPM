@@ -1,3 +1,4 @@
+import { browser } from "webextension-polyfill-ts";
 import { WebRequestOnBeforeRequestEventDetails } from "../types/browser-web-request-event-details";
 import { sha256Buffer } from "./sha256";
 

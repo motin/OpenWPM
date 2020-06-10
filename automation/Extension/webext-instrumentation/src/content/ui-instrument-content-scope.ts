@@ -1,3 +1,4 @@
+import { browser } from "webextension-polyfill-ts";
 import { xpath } from "../lib/xpath";
 import { pageScript } from "./ui-instrument-page-scope";
 
