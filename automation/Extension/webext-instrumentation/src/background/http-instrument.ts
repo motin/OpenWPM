@@ -621,12 +621,8 @@ export class HttpInstrument {
       dataReceiver.saveRecord("http_responses", update);
       */
       this.dataReceiver.logError(
-        "Unable to retrieve response body." +
-          "Likely caused by a programming error. Error Message:" +
-          err.name +
-          err.message +
-          "\n" +
-          err.stack,
+        `Unable to retrieve response body.\n` +
+          `Likely caused by a programming error: ${err.name}: ${err.message}\n${err.stack}`,
       );
       update.content_hash = "<error>";
       this.dataReceiver.saveRecord("http_responses", update);
