@@ -7,6 +7,7 @@ module.exports = {
     feature: "./feature.js/index.js",
     "js-instrument-content-script": "./js-instrument-content-script.js/index.js",
     "ui-instrument-content-script": "./ui-instrument-content-script.js/index.js",
+    "response-body-listener-content-script": "./response-body-listener-content-script.js/index.js",
   },
   output: {
     path: path.resolve(__dirname, "src"),

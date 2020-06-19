@@ -61,9 +61,12 @@
   },
   "dependencies": {
     "content-scripts-register-polyfill": "^1.0.1",
-    "webextension-polyfill-ts": "^0.17.0"
+    "webext-patterns": "^0.9.0",
+    "webextension-polyfill-ts": "^0.17.0",
+    "xhook": "github:jpillora/xhook#es6-2020-refactor"
   },
   "devDependencies": {
+    "@types/chrome": "^0.0.116",
     "ava": "^3.7.1",
     "codecov": "^3.6.1",
     "commitizen": "^4.0.4",

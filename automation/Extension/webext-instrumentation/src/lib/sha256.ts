@@ -16,13 +16,13 @@ export function sha256(str) {
   return sha256Buffer(buffer);
 }
 
-export function sha256Buffer(buffer) {
+export function sha256Buffer(buffer): PromiseLike<string> {
   return crypto.subtle.digest("SHA-256", buffer).then(function(hash) {
     return hex(hash);
   });
 }
 
-function hex(buffer) {
+function hex(buffer: ArrayBuffer): string {
   const hexCodes = [];
   const view = new DataView(buffer);
   for (let i = 0; i < view.byteLength; i += 4) {

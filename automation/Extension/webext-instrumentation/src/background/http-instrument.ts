@@ -4,6 +4,7 @@ import { extensionSessionUuid } from "../lib/extension-session-uuid";
 import { HttpPostParser, ParsedPostRequest } from "../lib/http-post-parser";
 import { PendingRequest } from "../lib/pending-request";
 import { PendingResponse } from "../lib/pending-response";
+import { ResponseBodyListenerOptions } from "../lib/response-body-listener";
 import { boolToInt, escapeString, escapeUrl } from "../lib/string-utils";
 import { HttpRedirect, HttpRequest, HttpResponse } from "../schema";
 import {
@@ -18,13 +19,18 @@ import BlockingResponse = WebRequest.BlockingResponse;
 import HttpHeaders = WebRequest.HttpHeaders;
 
 type SaveContentOption = boolean | string;
+type SaveContentMethodOption =
+  | undefined
+  | ""
+  | "filter_response_data"
+  | "injected_page_script";
 type ResourceTypesOption = undefined | string;
 type UrlsOption = undefined | string;
 
 /**
  * Note: Different parts of the desired information arrives in different events as per below:
  * request = headers in onBeforeSendHeaders + body in onBeforeRequest
- * response = headers in onCompleted + body via a onBeforeRequest filter
+ * response = headers in onCompleted + body via a onBeforeRequest filter / via an injected page script
  * redirect = original request headers+body, followed by a onBeforeRedirect and then a new set of request headers+body and response headers+body
  * Docs: https://developer.mozilla.org/en-US/docs/User:wbamberg/webRequest.RequestDetails
  */
@@ -72,10 +78,11 @@ export class HttpInstrument {
   public run(
     crawlID,
     saveContentOption: SaveContentOption,
+    saveContentMethodOption: SaveContentMethodOption,
     resourceTypesOption: ResourceTypesOption,
     urlsOption: UrlsOption,
   ) {
-    const filter: RequestFilter = {
+    const requestFilter: RequestFilter = {
       urls: urlsOption ? urlsOption.split("|") : ["<all_urls>"],
       types: this.resourceTypesToListenFor(resourceTypesOption),
     };
@@ -84,6 +91,15 @@ export class HttpInstrument {
       return (
         details.originUrl && details.originUrl.indexOf("moz-extension://") > -1
       );
+    };
+
+    const responseBodyListenerOptions: ResponseBodyListenerOptions = {
+      saveContentViaFilterResponseData:
+        !saveContentMethodOption ||
+        saveContentMethodOption === "filter_response_data",
+      saveContentViaInjectedPageScript:
+        saveContentMethodOption === "injected_page_script",
+      requestFilter,
     };
 
     /*
@@ -103,14 +119,19 @@ export class HttpInstrument {
       const pendingResponse = this.getPendingResponse(details.requestId);
       pendingResponse.resolveOnBeforeRequestEventDetails(details);
       if (this.shouldSaveContent(saveContentOption, details.type)) {
-        pendingResponse.addResponseResponseBodyListener(details);
+        pendingResponse.addResponseResponseBodyListener(
+          details,
+          responseBodyListenerOptions,
+          this.dataReceiver,
+        );
       }
       return blockingResponseThatDoesNothing;
     };
     browser.webRequest.onBeforeRequest.addListener(
       this.onBeforeRequestListener,
-      filter,
-      this.isContentSavingEnabled(saveContentOption)
+      requestFilter,
+      this.isContentSavingEnabled(saveContentOption) &&
+        responseBodyListenerOptions.saveContentViaFilterResponseData
         ? ["requestBody", "blocking"]
         : ["requestBody"],
     );
@@ -130,7 +151,7 @@ export class HttpInstrument {
     };
     browser.webRequest.onBeforeSendHeaders.addListener(
       this.onBeforeSendHeadersListener,
-      filter,
+      requestFilter,
       ["requestHeaders"],
     );
 
@@ -143,7 +164,7 @@ export class HttpInstrument {
     };
     browser.webRequest.onBeforeRedirect.addListener(
       this.onBeforeRedirectListener,
-      filter,
+      requestFilter,
       ["responseHeaders"],
     );
 
@@ -163,7 +184,7 @@ export class HttpInstrument {
     };
     browser.webRequest.onCompleted.addListener(
       this.onCompletedListener,
-      filter,
+      requestFilter,
       ["responseHeaders"],
     );
   }

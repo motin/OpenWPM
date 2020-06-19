@@ -28,7 +28,8 @@ async function main() {
       ui_instrument_clicks:true,
       ui_instrument_state:true,
       ui_instrument_state_interval_ms:"1000",
-      save_content:false,
+      save_content:true,
+      save_content_method:"filter_response_data",
       testing:true,
       crawl_id:0
     };
@@ -63,7 +64,8 @@ async function main() {
     loggingDB.logDebug("HTTP Instrumentation enabled");
     let httpInstrument = new HttpInstrument(loggingDB);
     httpInstrument.run(config['crawl_id'],
-                       config['save_content']);
+                       config['save_content'],
+                       config['save_content_method']);
   }
 
   if (config['callstack_instrument']) {
