@@ -44,5 +44,5 @@ export const Uint8ToBase64 = function(u8Arr: Uint8Array) {
 };
 
 export const boolToInt = function(bool: boolean) {
-  return bool ? 1 : 0;
+  return bool === undefined ? -1 : bool ? 1 : 0;
 };
