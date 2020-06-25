@@ -248,6 +248,34 @@ export class HttpInstrument {
     return this.pendingResponses[requestId];
   }
 
+  /**
+   * Wrapper around browser.tabs.get which handles rejections gracefully
+   * (sometimes the tab is no longer available when doing the lookup)
+   *
+   * @param tabId
+   */
+  private async getTabMetadata(
+    tabId: number,
+  ): Promise<{ windowId: number; incognito: boolean; url: string }> {
+    const emptyMetadata = {
+      windowId: undefined,
+      incognito: undefined,
+      url: undefined,
+    };
+    if (tabId > -1) {
+      const { windowId, incognito, url } = await browser.tabs
+        .get(tabId)
+        .catch(reason => {
+          this.dataReceiver.logError(
+            `Usage of browser.tabs.get in http instrument rejected: ${reason}`,
+          );
+          return emptyMetadata;
+        });
+      return { windowId, incognito, url };
+    }
+    return emptyMetadata;
+  }
+
   /*
    * HTTP Request Handler and Helper Functions
    */
@@ -265,10 +293,7 @@ export class HttpInstrument {
     );
     */
 
-    const tab =
-      details.tabId > -1
-        ? await browser.tabs.get(details.tabId)
-        : { windowId: undefined, incognito: undefined, url: undefined };
+    const tab = await this.getTabMetadata(details.tabId);
 
     const update = {} as HttpRequest;
 
@@ -566,10 +591,7 @@ export class HttpInstrument {
     const responseStatus = details.statusCode;
     const responseStatusText = details.statusLine;
 
-    const tab =
-      details.tabId > -1
-        ? await browser.tabs.get(details.tabId)
-        : { windowId: undefined, incognito: undefined };
+    const tab = await this.getTabMetadata(details.tabId);
     const httpRedirect: HttpRedirect = {
       incognito: boolToInt(tab.incognito),
       crawl_id: crawlID,
@@ -645,10 +667,7 @@ export class HttpInstrument {
     );
     */
 
-    const tab =
-      details.tabId > -1
-        ? await browser.tabs.get(details.tabId)
-        : { windowId: undefined, incognito: undefined };
+    const tab = await this.getTabMetadata(details.tabId);
 
     const update = {} as HttpResponse;
 
