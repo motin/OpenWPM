@@ -114,9 +114,9 @@ export class HttpInstrument {
       if (requestStemsFromExtension(details)) {
         return blockingResponseThatDoesNothing;
       }
-      const pendingRequest = this.getPendingRequest(details.requestId);
+      const pendingRequest = this.newPendingRequest(details.requestId);
       pendingRequest.resolveOnBeforeRequestEventDetails(details);
-      const pendingResponse = this.getPendingResponse(details.requestId);
+      const pendingResponse = this.newPendingResponse(details.requestId);
       pendingResponse.resolveOnBeforeRequestEventDetails(details);
       if (this.shouldSaveContent(saveContentOption, details.type)) {
         pendingResponse.addResponseResponseBodyListener(
@@ -255,15 +255,31 @@ export class HttpInstrument {
     );
   }
 
+  private newPendingRequest(requestId): PendingRequest {
+    this.pendingRequests[requestId] = new PendingRequest();
+    return this.pendingRequests[requestId];
+  }
+
   private getPendingRequest(requestId): PendingRequest {
     if (!this.pendingRequests[requestId]) {
+      this.dataReceiver.logError(
+        `Attempted to access non-existing pending request with id ${requestId}`,
+      );
       this.pendingRequests[requestId] = new PendingRequest();
     }
     return this.pendingRequests[requestId];
   }
 
+  private newPendingResponse(requestId): PendingResponse {
+    this.pendingResponses[requestId] = new PendingResponse();
+    return this.pendingResponses[requestId];
+  }
+
   private getPendingResponse(requestId): PendingResponse {
     if (!this.pendingResponses[requestId]) {
+      this.dataReceiver.logError(
+        `Attempted to access non-existing pending response with id ${requestId}`,
+      );
       this.pendingResponses[requestId] = new PendingResponse();
     }
     return this.pendingResponses[requestId];
